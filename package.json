@@ -1,0 +1,29 @@
+{
+  "name": "leaflet-shadow-simulator",
+  "version": "0.1.0",
+  "description": "Display terrain and structure shadows cast by the sun in a custom Leaflet layer",
+  "main": "dist/leaflet-shadow-simulator.umd.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ted-piotrowski/leaflet-shadow-simulator.git"
+  },
+  "keywords": [
+    "leaflet",
+    "shade",
+    "layer",
+    "shadow",
+    "simulator"
+  ],
+  "author": "Ted Piotrowski",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ted-piotrowski/leaflet-shadow-simulator/issues"
+  },
+  "homepage": "https://github.com/ted-piotrowski/leaflet-shadow-simulator#readme",
+  "dependencies": {
+    "suncalc": "^1.9.0"
+  }
+}

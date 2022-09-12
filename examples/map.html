@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<script src="../dist/leaflet-shadow-simulator.umd.min.js"></script>
+	<style>
+		body {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		#mapid {
+			height: 100vh;
+		}
+
+		.leaflet-control-time {
+			padding-left: 40px;
+		}
+	</style>
+	<title>Shade Map Leaflet example</title>
+</head>
+
+<body>
+	<div id="mapid"></div>
+	<div class="leaflet-control-container">
+		<div class="leaflet-top leaflet-left">
+			<div class="leaflet-control-time leaflet-control">
+				<button id="decrement">-1 hour</button>
+				<button id="increment">+1 hour</button>
+				<button id="play">Play</button>
+				<button id="stop">Stop</button>
+				<button>
+					<a href="https://shademap.app/about" target="_blank">Get API key</a>
+				</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		/* Leaflet setup */
+		var map = L.map("mapid").setView([47.69682, -121.92078], 9);
+		L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			attribution:
+				'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			maxZoom: 18,
+		}).addTo(map);
+		/* End Leaflet setup */
+
+
+		/* ShadeMap setup */
+		let now = new Date(1633358583454);
+		const shadeMap = L.shadeMap({
+			apiKey: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRwcGlvdHJvd3NraUBzaGFkZW1hcC5hcHAiLCJjcmVhdGVkIjoxNjYyNDkzMDY2Nzk0LCJpYXQiOjE2NjI0OTMwNjZ9.ovCrLTYsdKFTF6TW3DuODxCaAtGQ3qhcmqj3DWcol5g",
+			date: now,
+			color: '#01112f',
+			opacity: 0.7,
+			terrainSource: {
+				maxZoom: 15,
+				tileSize: 256,
+				getSourceUrl: ({ x, y, z }) => `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`,
+				getElevation: ({ r, g, b, a }) => (r * 256 + g + b / 256) - 32768,
+			},
+		}).addTo(map);
+		/* End ShadeMap setup */
+
+		/* Controls setup */
+		let intervalTimer;
+		const increment = document.getElementById('increment');
+		const decrement = document.getElementById('decrement');
+		const play = document.getElementById('play');
+		const stop = document.getElementById('stop');
+
+		increment.addEventListener('click', () => {
+			now = new Date(now.getTime() + 3600000);
+			shadeMap.setDate(now);
+		}, false);
+
+		decrement.addEventListener('click', () => {
+			now = new Date(now.getTime() - 3600000);
+			shadeMap.setDate(now);
+		}, false);
+
+		play.addEventListener('click', () => {
+			intervalTimer = setInterval(() => {
+				now = new Date(now.getTime() + 60000);
+				shadeMap.setDate(now);
+			}, 100);
+		});
+
+		stop.addEventListener('click', () => {
+			clearInterval(intervalTimer);
+		})
+		/* End controls setup */
+
+	</script>
+</body>
+
+</html>
