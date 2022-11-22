@@ -1,6 +1,6 @@
 {
   "name": "leaflet-shadow-simulator",
-  "version": "0.1.0",
+  "version": "0.13.14",
   "description": "Display terrain and structure shadows cast by the sun in a custom Leaflet layer",
   "main": "dist/leaflet-shadow-simulator.umd.min.js",
   "scripts": {
