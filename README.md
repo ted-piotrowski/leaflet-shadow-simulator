@@ -2,7 +2,7 @@
 
 Terrain, building and object shadow simulator for Leaflet. Display sunlight and shadow on a map for any date and time of year.
 
-![Leaflet Shadow Simulator demo](/demo.gif)
+[![Leaflet Shadow Simulator demo](/demo.gif)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
 [Live Demo](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
@@ -152,12 +152,12 @@ Mapbox Terrain-DEM v1 is a Mapbox-provided raster tileset is a global elevation 
 
 #### getFeatures
 
-Takes `map` as an argument and returns a GeoJSON collection of features whose shadows will be displayed on the map. Currently only supports `Polygon` and `MultiPolygon`.
+Returns a GeoJSON collection of features whose shadows will be displayed on the map. Currently only supports `Polygon` and `MultiPolygon`.
 
 ##### Adds a 1000 meter tall structure near Alexandria, Egypt
 
 ```javascript
-getFeatures: (map) => {
+getFeatures: () => {
   return [{
     "type": "Feature",
     "geometry": {
