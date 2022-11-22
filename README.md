@@ -67,7 +67,7 @@ import ShadeMap from 'leaflet-shadow-simulator';
 
 const map = L.map("mapid"); 
 
-const shadeMap = ShadeMap({
+const shadeMap = new ShadeMap({
   date: new Date(),    // display shadows for current date
   color: '#01112f',    // shade color
   opacity: 0.7,        // opacity of shade color
