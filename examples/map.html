@@ -18,8 +18,10 @@
 			height: 100vh;
 		}
 
-		.leaflet-control-time {
-			padding-left: 40px;
+		.leaflet-control-time.leaflet-control {
+			margin-left: 50px;
+			padding: 20px;
+			background-color: white;
 		}
 	</style>
 	<title>Shade Map Leaflet example</title>
@@ -37,6 +39,7 @@
 				<button>
 					<a href="https://shademap.app/about" target="_blank">Get API key</a>
 				</button>
+				<span id="loader" style="padding: 3px;"></span>
 			</div>
 		</div>
 	</div>
@@ -52,6 +55,7 @@
 
 
 		/* ShadeMap setup */
+		const loaderEl = document.getElementById('loader');
 		let now = new Date(1633358583454);
 		const shadeMap = L.shadeMap({
 			apiKey: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRwcGlvdHJvd3NraUBzaGFkZW1hcC5hcHAiLCJjcmVhdGVkIjoxNjYyNDkzMDY2Nzk0LCJpYXQiOjE2NjI0OTMwNjZ9.ovCrLTYsdKFTF6TW3DuODxCaAtGQ3qhcmqj3DWcol5g",
@@ -65,6 +69,10 @@
 				getElevation: ({ r, g, b, a }) => (r * 256 + g + b / 256) - 32768,
 			},
 		}).addTo(map);
+
+		shadeMap.on('tileloaded', (loadedTiles, totalTiles) => {
+			loaderEl.innerText = `Loading: ${(loadedTiles / totalTiles * 100).toFixed(0)}%`;
+		});
 		/* End ShadeMap setup */
 
 		/* Controls setup */
