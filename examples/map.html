@@ -5,8 +5,9 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+	<script src='https://www.unpkg.com/suncalc@1.9.0/suncalc.js'></script>
 	<script src="../dist/leaflet-shadow-simulator.umd.min.js"></script>
 	<style>
 		body {
@@ -19,9 +20,29 @@
 		}
 
 		.leaflet-control-time.leaflet-control {
-			margin-left: 50px;
 			padding: 20px;
 			background-color: white;
+		}
+
+		#exposure-gradient-container {
+			display: none;
+			background-color: white;
+			padding: 0 10px 5px;
+			margin-top: 0;
+			float: none;
+		}
+
+		#exposure-gradient {
+			height: 20px;
+			background-image: linear-gradient(to right, rgb(0 0 255/ 0.5), rgb(0 255 0 / 0.5), rgb(255 0 0 / 0.5));
+			display: flex;
+		}
+
+		#exposure-gradient>div {
+			flex: 1;
+			border: 1px solid white;
+			text-align: center;
+			font-weight: bold;
 		}
 	</style>
 	<title>Shade Map Leaflet example</title>
@@ -36,20 +57,29 @@
 				<button id="increment">+1 hour</button>
 				<button id="play">Play</button>
 				<button id="stop">Stop</button>
+				<label><input id="exposure" type="checkbox" autocomplete="off" />Full-day sun exposure</label>
 				<button>
 					<a href="https://shademap.app/about" target="_blank">Get API key</a>
 				</button>
 				<span id="loader" style="padding: 3px;"></span>
 			</div>
+			<div class="leaflet-control-time leaflet-control" id="exposure-gradient-container">
+				<div>Hours of sunlight</div>
+				<div id="exposure-gradient"></div>
+			</div>
 		</div>
 	</div>
 	<script>
 		/* Leaflet setup */
-		var map = L.map("mapid").setView([47.69682, -121.92078], 9);
+		var map = L.map("mapid", { zoomControl: false }).setView([47.69682, -121.92078], 9);
 		L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			attribution:
 				'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 			maxZoom: 18,
+		}).addTo(map);
+
+		L.control.zoom({
+			position: 'bottomright'
 		}).addTo(map);
 		/* End Leaflet setup */
 
@@ -81,6 +111,9 @@
 		const decrement = document.getElementById('decrement');
 		const play = document.getElementById('play');
 		const stop = document.getElementById('stop');
+		const exposure = document.getElementById('exposure');
+		const exposureGradientContainer = document.getElementById('exposure-gradient-container');
+		const exposureGradient = document.getElementById('exposure-gradient');
 
 		increment.addEventListener('click', () => {
 			now = new Date(now.getTime() + 3600000);
@@ -101,6 +134,37 @@
 
 		stop.addEventListener('click', () => {
 			clearInterval(intervalTimer);
+		})
+
+		exposure.addEventListener('click', (e) => {
+			clearInterval(intervalTimer);
+			const target = e.target;
+			if (!target.checked) {
+				shadeMap && shadeMap.setShowExposure(false);
+				increment.disabled = false;
+				decrement.disabled = false;
+				play.disabled = false;
+				stop.disabled = false;
+				exposureGradientContainer.style.display = 'none';
+			} else {
+				shadeMap && shadeMap.setShowExposure(true);
+				increment.disabled = true
+				decrement.disabled = true;
+				play.disabled = true;
+				stop.disabled = true;
+
+				const { lat, lng } = map.getCenter();
+				const { sunrise, sunset } = SunCalc.getTimes(now, lat, lng);
+				const hours = (sunset - sunrise) / 1000 / 3600;
+				const partial = hours - Math.floor(hours);
+				const html = [];
+				for (let i = 0; i < hours; i++) {
+					html.push(`<div>${i + 1}</div>`)
+				}
+				html.push(`<div style="flex: ${partial}"></div>`);
+				exposureGradientContainer.style.display = 'block';
+				exposureGradient.innerHTML = html.join('');
+			}
 		})
 		/* End controls setup */
 
