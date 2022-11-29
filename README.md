@@ -1,8 +1,8 @@
 # leaflet-shadow-simulator
 
-Terrain, building and object shadow simulator for Leaflet. Display sunlight and shadow on a map for any date and time of year.
+Shadow simulator for Leaflet. Visualize sunlight and shadow on a map for any date and time of year.
 
-[![Leaflet Shadow Simulator demo](/demo.gif)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
+[![Leaflet Shadow Simulator demo](/demo.jpg)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
 [Live Demo](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
@@ -102,6 +102,7 @@ Property name | Type | Default value | Comment
 `date` | `Date` | `new Date()` | Sun's position in the sky is based on this date
 `color` | `String` | `#000` | 3 or 6 digit hexadecimal number
 `opacity` | `Number` | `0.3`
+`showExposure` | `Boolean` | `false` | If set to true, display full-day sun exposure for `date` (**Note:** requires [suncalc](https://www.npmjs.com/package/suncalc))
 `terrainSource` | `Object` | See [terrainSource](#terrainsource) | Specify DEM or DSM tiles containing terrain elevation data
 `getFeatures` | `Function` | See [getFeatures](#getfeatures) | Returns GeoJSON of objects, such as buildings, to display on the map
 
@@ -186,3 +187,4 @@ getFeatures: () => {
 
 `setOpacity(opacity: Number)` - change shade opacity
 
+`setShowExposure(show: Boolean)` - toggle between shadows and full-day sun exposure for `date` (**Note:** requires [suncalc](https://www.npmjs.com/package/suncalc))
