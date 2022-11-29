@@ -30,6 +30,7 @@ interface ShadeMapOptions {
     date?: Date;
     color?: string;
     opacity?: number;
+    showExposure?: boolean;
     terrainSource?: TerrainSource;
     getFeatures?: () => Promise<MapboxGeoJSONFeature[]>;
     apiKey: string;
@@ -44,6 +45,7 @@ declare class ShadeMapLeaflet extends EventEmitter {
     setDate(date: Date): this;
     setColor(color: string): this;
     setOpacity(opacity: number): this;
+    setShowExposure(show: boolean): this;
     readPixel(x: number, y: number): Uint8Array;
 }
 
