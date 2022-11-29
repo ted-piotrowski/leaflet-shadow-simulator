@@ -25,8 +25,8 @@ Using npm:
 In a browser:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-shadow-simulator/dist/leaflet-shadow-simulator.umd.min.js"></script>
 <script>
   var map = L.map("mapid"); 
