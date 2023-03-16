@@ -26,6 +26,17 @@ interface TerrainSource {
         a: number;
     }) => number;
 }
+
+export interface SunExposureOptions {
+	startDate: Date;
+	endDate: Date;
+	iterations?: number;
+}
+
+export interface SunExposure extends SunExposureOptions {
+	enabled: boolean;
+}
+
 interface ShadeMapOptions {
     date?: Date;
     color?: string;
@@ -45,7 +56,7 @@ declare class ShadeMapLeaflet extends EventEmitter {
     setDate(date: Date): this;
     setColor(color: string): this;
     setOpacity(opacity: number): this;
-    setShowExposure(show: boolean): this;
+    setSunExposure(enabled: boolean, options: SunExposureOptions): Promise<this>;
     readPixel(x: number, y: number): Uint8Array;
 }
 

@@ -102,7 +102,7 @@ Property name | Type | Default value | Comment
 `date` | `Date` | `new Date()` | Sun's position in the sky is based on this date
 `color` | `String` | `#000` | 3 or 6 digit hexadecimal number
 `opacity` | `Number` | `0.3`
-`showExposure` | `Boolean` | `false` | If set to true, display full-day sun exposure for `date` (**Note:** requires [suncalc](https://www.npmjs.com/package/suncalc))
+`sunExposure` | `Object` | See [sunExposure](#sunExposure) | Display sun exposure for provided date range 
 `terrainSource` | `Object` | See [terrainSource](#terrainsource) | Specify DEM or DSM tiles containing terrain elevation data
 `getFeatures` | `Function` | See [getFeatures](#getfeatures) | Returns GeoJSON of objects, such as buildings, to display on the map
 
@@ -116,6 +116,17 @@ Property name | Type | Default value | Comment
 `tileSize` | `Number` | `256` | Tile size for custom DEM tile source
 `sourceUrl` | `Function` | `Returns tile encoding 0m elevation for all locations` | Returns url of DEM tile for given `(x, y, z)` coordinate
 `getElevation` | `Function` | `return (r * 256 + g + b / 256) - 32768` | Returns elevation in meters for each (r,g,b,a) pixel of DEM tile
+
+#### sunExposure
+
+An object describing sun exposure settings
+Property name | Type | Default value | Comment
+:--- | :--- | :--- | :---
+`enabled` | `Boolean` | `false` | Should sun exposure be displayed
+`startDate` | `Date` | `new Date()` | Start date of sun exposure time interval
+`endDate` | `Date` | `new Date()` | End date of sun exposure time interval
+`iterations` | `number` | `32` | Number of discrete chunks to calculate shadows for between startDate and endDate. A larger number will provide more detail but take longer to compute.
+
 
 ##### Open Data on AWS for terrainSource
 
@@ -140,10 +151,28 @@ Mapbox Terrain-DEM v1 is a Mapbox-provided raster tileset is a global elevation 
 
 ```javascript
 {
-  tileSize: 256,
-  maxZoom: 15,
+  tileSize: 514,
+  maxZoom: 14,
   getSourceUrl: ({x, y, z}) => {
+    const subdomain = ['a', 'b', 'c', 'd'][(x + y) % 4];
     return `https://${subdomain}.tiles.mapbox.com/raster/v1/mapbox.mapbox-terrain-dem-v1/${z}/${x}/${y}.webp?sku=101wuwGrczDtH&access_token=${MAPBOX_API_KEY}`;
+  },
+  getElevation: ({r, g, b, a}) => {
+    return -10000 + ((r * 256 * 256 + g * 256 + b) * .1);
+  }
+}
+```
+
+##### Maptiler Terrain RGB v2
+
+[More info](https://cloud.maptiler.com/tiles/terrain-rgb-v2/)
+
+```javascript
+{
+  tileSize: 514,
+  maxZoom: 12,
+  getSourceUrl: ({x, y, z}) => {
+    return `https://api.maptiler.com/tiles/terrain-rgb-v2/${z}/${x}/${y}.webp?key=${MAPTILER_KEY}`;
   },
   getElevation: ({r, g, b, a}) => {
     return -10000 + ((r * 256 * 256 + g * 256 + b) * .1);
@@ -181,12 +210,14 @@ getFeatures: () => {
 
 ### Available functions
 
-`setDate(date: Date)` - update shade layer to reflect new date
+`setDate(date: Date)` - update shade layer to reflect new `date`
 
 `setColor(color: String)` - change shade color
 
 `setOpacity(opacity: Number)` - change shade opacity
 
-`setShowExposure(show: Boolean)` - toggle between shadows and full-day sun exposure for `date` (**Note:** requires [suncalc](https://www.npmjs.com/package/suncalc))
+`setSunExposure(enabled: Boolean, options: SunExposureOptions)` - toggle between shadows and sun exposure mode
 
 `getHoursOfSun(x: Number, y: Number)` - if sun exposure mode enabled, returns the hours of sunlight for a given pixel on the map
+
+`remove()` - remove the layer from the map
