@@ -1,5 +1,7 @@
 # leaflet-shadow-simulator
 
+**Using Mapbox GL JS/Maplibre GL JS?** Try [mapbox-gl-shadow-simulator](https://www.npmjs.com/package/mapbox-gl-shadow-simulator)
+
 Shadow simulator for Leaflet. Visualize sunlight and shadow on a map for any date and time of year.
 
 [![Leaflet Shadow Simulator demo](/demo.jpg)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
