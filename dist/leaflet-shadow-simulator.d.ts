@@ -1,5 +1,5 @@
 import { Map } from 'leaflet';
-import { MapboxGeoJSONFeature } from 'mapbox-gl';
+import { LngLatLike, MapboxGeoJSONFeature } from 'mapbox-gl';
 
 declare type Listener = (...args: any[]) => void;
 declare class EventEmitter {
@@ -48,6 +48,14 @@ interface ShadeMapOptions {
     debug?: (msg: string) => void;
 }
 
+interface DSMSource {
+    data: Uint8ClampedArray;
+    bounds: [LngLatLike, LngLatLike];
+    width: number;
+    height: number;
+    maxHeight: number;
+}
+
 declare class ShadeMapLeaflet extends EventEmitter {
     constructor(options: ShadeMapOptions);
     addTo(map: Map): this;
@@ -57,6 +65,7 @@ declare class ShadeMapLeaflet extends EventEmitter {
     setColor(color: string): this;
     setOpacity(opacity: number): this;
     setTerrainSource(terrainSource: TerrainSource): this;
+    setDSMSource(dsmSource: DSMSource): this;
     setSunExposure(enabled: boolean, options: SunExposureOptions): Promise<this>;
     readPixel(x: number, y: number): Uint8Array;
 }
