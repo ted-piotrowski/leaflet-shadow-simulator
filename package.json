@@ -3,6 +3,8 @@
   "version": "0.37.1",
   "description": "Display terrain and structure shadows cast by the sun in a custom Leaflet layer",
   "main": "dist/leaflet-shadow-simulator.umd.min.js",
+  "browser": "dist/leaflet-shadow-simulator.umd.min.js",
+  "module": "dist/leaflet-shadow-simulator.esm.js",
   "types": "dist/leaflet-shadow-simulator.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
