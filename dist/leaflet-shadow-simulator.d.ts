@@ -41,6 +41,7 @@ interface ShadeMapOptions {
     date?: Date;
     color?: string;
     opacity?: number;
+    belowCanopy?: boolean;
     showExposure?: boolean;
     terrainSource?: TerrainSource;
     getFeatures?: () => Promise<MapboxGeoJSONFeature[]>;
