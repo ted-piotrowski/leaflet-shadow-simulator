@@ -46,6 +46,7 @@ interface ShadeMapOptions {
     terrainSource?: TerrainSource;
     getFeatures?: () => Promise<MapboxGeoJSONFeature[]>;
     apiKey: string;
+    getSize?: () => { width: number, height: number };
     debug?: (msg: string) => void;
 }
 
