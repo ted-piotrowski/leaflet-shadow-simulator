@@ -2,194 +2,194 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-	<script src='https://www.unpkg.com/suncalc@1.9.0/suncalc.js'></script>
-	<script src="https://unpkg.com/osmtogeojson/osmtogeojson.js"></script>
-	<script src="../dist/leaflet-shadow-simulator.umd.min.js"></script>
-	<style>
-		body {
-			padding: 0px;
-			margin: 0px;
-		}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src='https://www.unpkg.com/suncalc@1.9.0/suncalc.js'></script>
+    <script src="https://unpkg.com/osmtogeojson/osmtogeojson.js"></script>
+    <script src="../dist/leaflet-shadow-simulator.umd.min.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
 
-		#mapid {
-			height: 100vh;
-		}
+        #mapid {
+            height: 100vh;
+        }
 
-		.leaflet-control-time.leaflet-control {
-			padding: 20px;
-			background-color: white;
-		}
+        .leaflet-control-time.leaflet-control {
+            padding: 20px;
+            background-color: white;
+        }
 
-		#exposure-gradient-container {
-			display: none;
-			background-color: white;
-			padding: 0 10px 5px;
-			margin-top: 0;
-			float: none;
-		}
+        #exposure-gradient-container {
+            display: none;
+            background-color: white;
+            padding: 0 10px 5px;
+            margin-top: 0;
+            float: none;
+        }
 
-		#exposure-gradient {
-			height: 20px;
-			background-image: linear-gradient(to right, rgb(0 0 255/ 0.5), rgb(0 255 0 / 0.5), rgb(255 0 0 / 0.5));
-			display: flex;
-		}
+        #exposure-gradient {
+            height: 20px;
+            background-image: linear-gradient(to right, rgb(0 0 255/ 0.5), rgb(0 255 0 / 0.5), rgb(255 0 0 / 0.5));
+            display: flex;
+        }
 
-		#exposure-gradient>div {
-			flex: 1;
-			border: 1px solid white;
-			text-align: center;
-			font-weight: bold;
-		}
-	</style>
-	<title>Shade Map Leaflet Markers example</title>
+        #exposure-gradient>div {
+            flex: 1;
+            border: 1px solid white;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+    <title>Shade Map Leaflet Markers example</title>
 </head>
 
 <body>
-	<div id="mapid"></div>
-	<div class="leaflet-control-container">
-		<div class="leaflet-top leaflet-left">
-			<div class="leaflet-control-time leaflet-control">
-				<button id="decrement">-1 hour</button>
-				<button id="increment">+1 hour</button>
-				<button id="play">Play</button>
-				<button id="stop">Stop</button>
-				<button>
-					<a href="https://shademap.app/about" target="_blank">Get API key</a>
-				</button>
-				<span id="loader" style="padding: 3px;"></span>
-			</div>
-		</div>
-	</div>
-	<script>
-		/* Leaflet setup */
-		var map = L.map("mapid", { zoomControl: false }).setView([47.75510439397995, -122.15675711631776], 17);
-		L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			attribution:
-				'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-			maxZoom: 18,
-		}).addTo(map);
+    <div id="mapid"></div>
+    <div class="leaflet-control-container">
+        <div class="leaflet-top leaflet-left">
+            <div class="leaflet-control-time leaflet-control">
+                <button id="decrement">-1 hour</button>
+                <button id="increment">+1 hour</button>
+                <button id="play">Play</button>
+                <button id="stop">Stop</button>
+                <button>
+                    <a href="https://shademap.app/about" target="_blank">Get API key</a>
+                </button>
+                <span id="loader" style="padding: 3px;"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* Leaflet setup */
+        var map = L.map("mapid", { zoomControl: false }).setView([47.75510439397995, -122.15675711631776], 17);
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution:
+                'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
 
-		L.control.zoom({
-			position: 'bottomright'
-		}).addTo(map);
-		/* End Leaflet setup */
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+        /* End Leaflet setup */
 
-		/* Add markers for cafes */
-		const cafes = [
-			[47.75479062611596, -122.15534138695534],
-			[47.75337697202738, -122.16319480178332],
-			[47.751941595291726, -122.15921456808333],
-			[47.753477542718706, -122.15083544800348],
-			[47.754992309138885, -122.15102829347933],
-			[47.757776865447056, -122.1563603726317],
-		]
-		const markers = cafes.map(coords => L.marker(coords).addTo(map))
-		/* End add markers for cafes */
+        /* Add markers for cafes */
+        const cafes = [
+            [47.75479062611596, -122.15534138695534],
+            [47.75337697202738, -122.16319480178332],
+            [47.751941595291726, -122.15921456808333],
+            [47.753477542718706, -122.15083544800348],
+            [47.754992309138885, -122.15102829347933],
+            [47.757776865447056, -122.1563603726317],
+        ]
+        const markers = cafes.map(coords => L.marker(coords).addTo(map))
+        /* End add markers for cafes */
 
-		/* ShadeMap setup */
-		const loaderEl = document.getElementById('loader');
-		let now = new Date(1633358583454);
-		const shadeMap = L.shadeMap({
-			apiKey: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRwcGlvdHJvd3NraUBzaGFkZW1hcC5hcHAiLCJjcmVhdGVkIjoxNjYyNDkzMDY2Nzk0LCJpYXQiOjE2NjI0OTMwNjZ9.ovCrLTYsdKFTF6TW3DuODxCaAtGQ3qhcmqj3DWcol5g",
-			date: now,
-			color: '#01112f',
-			opacity: 0.7,
-			terrainSource: {
-				maxZoom: 15,
-				tileSize: 256,
-				getSourceUrl: ({ x, y, z }) => `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`,
-				getElevation: ({ r, g, b, a }) => (r * 256 + g + b / 256) - 32768,
-				_overzoom: 18,
-			},
-			getFeatures: async () => {
-				try {
-					if (map.getZoom() > 15) {
-						const bounds = map.getBounds();
-						const north = bounds.getNorth();
-						const south = bounds.getSouth();
-						const east = bounds.getEast();
-						const west = bounds.getWest();
-						const query = `https://overpass-api.de/api/interpreter?data=%2F*%0AThis%20has%20been%20generated%20by%20the%20overpass-turbo%20wizard.%0AThe%20original%20search%20was%3A%0A%E2%80%9Cbuilding%E2%80%9D%0A*%2F%0A%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%0A%2F%2F%20gather%20results%0A%28%0A%20%20%2F%2F%20query%20part%20for%3A%20%E2%80%9Cbuilding%E2%80%9D%0A%20%20way%5B%22building%22%5D%28${south}%2C${west}%2C${north}%2C${east}%29%3B%0A%29%3B%0A%2F%2F%20print%20results%0Aout%20body%3B%0A%3E%3B%0Aout%20skel%20qt%3B`;
-						const response = await fetch(query)
-						const json = await response.json();
-						const geojson = osmtogeojson(json);
-						// If no building height, default to one storey of 3 meters
-						geojson.features.forEach(feature => {
-							if (!feature.properties) {
-								feature.properties = {};
-							}
-							if (!feature.properties.height) {
-								feature.properties.height = 3;
-							}
-						});
-						return geojson.features;
-					}
-				} catch (e) {
-					console.error(e);
-				}
-				return [];
-			},
-			debug: (msg) => { console.log(new Date().toISOString(), msg) }
-		}).addTo(map);
+        /* ShadeMap setup */
+        const loaderEl = document.getElementById('loader');
+        let now = new Date(1633358583454);
+        const shadeMap = L.shadeMap({
+            apiKey: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRwcGlvdHJvd3NraUBzaGFkZW1hcC5hcHAiLCJjcmVhdGVkIjoxNjYyNDkzMDY2Nzk0LCJpYXQiOjE2NjI0OTMwNjZ9.ovCrLTYsdKFTF6TW3DuODxCaAtGQ3qhcmqj3DWcol5g",
+            date: now,
+            color: '#01112f',
+            opacity: 0.7,
+            terrainSource: {
+                maxZoom: 15,
+                tileSize: 256,
+                getSourceUrl: ({ x, y, z }) => `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`,
+                getElevation: ({ r, g, b, a }) => (r * 256 + g + b / 256) - 32768,
+                _overzoom: 18,
+            },
+            getFeatures: async () => {
+                try {
+                    if (map.getZoom() > 15) {
+                        const bounds = map.getBounds();
+                        const north = bounds.getNorth();
+                        const south = bounds.getSouth();
+                        const east = bounds.getEast();
+                        const west = bounds.getWest();
+                        const query = `https://overpass-api.de/api/interpreter?data=%2F*%0AThis%20has%20been%20generated%20by%20the%20overpass-turbo%20wizard.%0AThe%20original%20search%20was%3A%0A%E2%80%9Cbuilding%E2%80%9D%0A*%2F%0A%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%0A%2F%2F%20gather%20results%0A%28%0A%20%20%2F%2F%20query%20part%20for%3A%20%E2%80%9Cbuilding%E2%80%9D%0A%20%20way%5B%22building%22%5D%28${south}%2C${west}%2C${north}%2C${east}%29%3B%0A%29%3B%0A%2F%2F%20print%20results%0Aout%20body%3B%0A%3E%3B%0Aout%20skel%20qt%3B`;
+                        const response = await fetch(query)
+                        const json = await response.json();
+                        const geojson = osmtogeojson(json);
+                        // If no building height, default to one storey of 3 meters
+                        geojson.features.forEach(feature => {
+                            if (!feature.properties) {
+                                feature.properties = {};
+                            }
+                            if (!feature.properties.height) {
+                                feature.properties.height = 3;
+                            }
+                        });
+                        return geojson.features;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+                return [];
+            },
+            debug: (msg) => { console.log(new Date().toISOString(), msg) }
+        }).addTo(map);
 
-		shadeMap.on('tileloaded', (loadedTiles, totalTiles) => {
-			loaderEl.innerText = `Loading: ${(loadedTiles / totalTiles * 100).toFixed(0)}%`;
-		});
+        shadeMap.on('tileloaded', (loadedTiles, totalTiles) => {
+            loaderEl.innerText = `Loading: ${(loadedTiles / totalTiles * 100).toFixed(0)}%`;
+        });
 
-		shadeMap.on('idle', async () => {
-			await new Promise(res => setTimeout(res, 0))
-			markers.forEach(marker => {
-				const latlng = marker.getLatLng();
-				const point = map.latLngToContainerPoint(latlng);
-				const x = point.x
-				const y = window.innerHeight - point.y
-				if ((x >= 0 && x <= window.innerWidth) && (y >= 0 && y <= window.innerHeight)) {
-					const pixel = shadeMap.readPixel(x, y);
-					if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
-						marker.setOpacity(1);    // in the sun
-					} else {
-						marker.setOpacity(0.3);  // in the shade
-					}
-				}
-			})
-		})
-		/* End ShadeMap setup */
+        shadeMap.on('idle', async () => {
+            await new Promise(res => setTimeout(res, 1))
+            markers.forEach(marker => {
+                const latlng = marker.getLatLng();
+                const point = map.latLngToContainerPoint(latlng);
+                const x = point.x
+                const y = window.innerHeight - point.y
+                if ((x >= 0 && x <= window.innerWidth) && (y >= 0 && y <= window.innerHeight)) {
+                    const pixel = shadeMap.readPixel(x, y);
+                    if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
+                        marker.setOpacity(1);    // in the sun
+                    } else {
+                        marker.setOpacity(0.3);  // in the shade
+                    }
+                }
+            })
+        })
+        /* End ShadeMap setup */
 
-		/* Controls setup */
-		let intervalTimer;
-		const increment = document.getElementById('increment');
-		const decrement = document.getElementById('decrement');
-		const play = document.getElementById('play');
-		const stop = document.getElementById('stop');
+        /* Controls setup */
+        let intervalTimer;
+        const increment = document.getElementById('increment');
+        const decrement = document.getElementById('decrement');
+        const play = document.getElementById('play');
+        const stop = document.getElementById('stop');
 
-		increment.addEventListener('click', () => {
-			now = new Date(now.getTime() + 3600000);
-			shadeMap.setDate(now);
-		}, false);
+        increment.addEventListener('click', () => {
+            now = new Date(now.getTime() + 3600000);
+            shadeMap.setDate(now);
+        }, false);
 
-		decrement.addEventListener('click', () => {
-			now = new Date(now.getTime() - 3600000);
-			shadeMap.setDate(now);
-		}, false);
+        decrement.addEventListener('click', () => {
+            now = new Date(now.getTime() - 3600000);
+            shadeMap.setDate(now);
+        }, false);
 
-		play.addEventListener('click', () => {
-			intervalTimer = setInterval(() => {
-				now = new Date(now.getTime() + 60000);
-				shadeMap.setDate(now);
-			}, 100);
-		});
+        play.addEventListener('click', () => {
+            intervalTimer = setInterval(() => {
+                now = new Date(now.getTime() + 60000);
+                shadeMap.setDate(now);
+            }, 100);
+        });
 
-		stop.addEventListener('click', () => {
-			clearInterval(intervalTimer);
-		})
-		/* End controls setup */
+        stop.addEventListener('click', () => {
+            clearInterval(intervalTimer);
+        })
+        /* End controls setup */
 
-	</script>
+    </script>
 </body>
 
 </html>
