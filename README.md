@@ -239,6 +239,29 @@ getFeatures: async () => {
 },
 ```
 
+### Check if location is in the sun or shade
+
+The shadow layer must render before you can check if a location is in the sun. You can make sure the shadow layer is rendered by listening for the `idle` event.
+
+```javascript
+shadeMap.on('idle', async () => {
+  // some latlng on the screen to test
+	const latlng =  [42.12, -121.74]
+  const point = map.latLngToContainerPoint(latlng);
+  const x = point.x;
+  const y = window.innerHeight - point.y
+	await new Promise(res => setTimeout(res, 0))
+	pixel = shadeMap.readPixel(x, y);
+	if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
+		// in the sun
+	} else {
+		// in the shade
+	}
+})
+```
+
+[See example](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/markers.html)
+
 ### Available functions
 
 `setDate(date: Date)` - update shade layer to reflect new `date`
