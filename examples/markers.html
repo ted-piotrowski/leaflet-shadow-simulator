@@ -46,7 +46,7 @@
             font-weight: bold;
         }
     </style>
-    <title>Shade Map Leaflet Markers example</title>
+    <title>leaflet-shadow-simulator Markers example</title>
 </head>
 
 <body>
@@ -142,20 +142,15 @@
         });
 
         shadeMap.on('idle', async () => {
-            await new Promise(res => setTimeout(res, 1))
-            markers.forEach(marker => {
+            const promises = markers.map(marker => {
                 const latlng = marker.getLatLng();
-                const point = map.latLngToContainerPoint(latlng);
-                const x = point.x
-                const y = window.innerHeight - point.y
-                if ((x >= 0 && x <= window.innerWidth) && (y >= 0 && y <= window.innerHeight)) {
-                    const pixel = shadeMap.readPixel(x, y);
-                    if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
-                        marker.setOpacity(1);    // in the sun
-                    } else {
-                        marker.setOpacity(0.3);  // in the shade
-                    }
-                }
+                const { x, y } = map.latLngToContainerPoint(latlng);
+                return shadeMap.isPositionInSun(x, y);
+            })
+            const results = await Promise.all(promises);
+            markers.forEach((marker, i) => {
+                const inTheSun = results[i] === true;
+                marker.setOpacity(inTheSun ? 1 : 0.5);
             })
         })
         /* End ShadeMap setup */

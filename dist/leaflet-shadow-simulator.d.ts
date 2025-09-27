@@ -70,6 +70,8 @@ declare class ShadeMapLeaflet extends EventEmitter {
     setDSMSource(dsmSource: DSMSource): this;
     setSunExposure(enabled: boolean, options: SunExposureOptions): Promise<this>;
     readPixel(x: number, y: number): Uint8Array;
+    isPositionInSun(x: number, y: number): Promise<boolean>;
+    isPositionInShade(x: number, y: number): Promise<boolean>;
 }
 
 export { ShadeMapLeaflet as default };

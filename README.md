@@ -245,18 +245,10 @@ The shadow layer must render before you can check if a location is in the sun. Y
 
 ```javascript
 shadeMap.on('idle', async () => {
-  await new Promise(res => setTimeout(res, 1));
-  // some latlng on the screen to test
   const latlng =  [42.12, -121.74];
-  const point = map.latLngToContainerPoint(latlng);
-  const x = point.x;
-  const y = window.innerHeight - point.y;
-  pixel = shadeMap.readPixel(x, y);
-  if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
-    // in the sun
-  } else {
-    // in the shade
-  }
+  const { x, y } = map.latLngToContainerPoint(latlng);
+  const inTheSun = await shadeMap.isPositionInSun(x, y);
+  console.log(`Position ${lat},${lng} is in ${inTheSun ? 'sun' : 'shade'}`);
 })
 ```
 
@@ -275,3 +267,7 @@ shadeMap.on('idle', async () => {
 `getHoursOfSun(x: Number, y: Number)` - if sun exposure mode enabled, returns the hours of sunlight for a given pixel on the map
 
 `remove()` - remove the layer from the map
+
+`isPositionInSun(x: Number, y: Number)` - check if a position is in the sun
+
+`isPositionInShade(x: Number, y: Number)` - check if a position is in the shade
