@@ -4,9 +4,9 @@
 
 Shadow simulator for Leaflet. Visualize sunlight and shadow on a map for any date and time of year.
 
-[![Leaflet Shadow Simulator demo](/demo.jpg)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
+[Example](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
-[Live Demo](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
+[![Leaflet Shadow Simulator demo](/demo.jpg)](https://ted-piotrowski.github.io/leaflet-shadow-simulator/examples/map.html)
 
 ## Download
 
