@@ -45,6 +45,11 @@
 			text-align: center;
 			font-weight: bold;
 		}
+
+		#hours {
+			padding-left:5px;
+			font-weight: bold;
+		}
 	</style>
 	<title>leaflet-shadow-simulator Example</title>
 </head>
@@ -65,7 +70,7 @@
 				<span id="loader" style="padding: 3px;"></span>
 			</div>
 			<div class="leaflet-control-time leaflet-control" id="exposure-gradient-container">
-				<div>Hours of sunlight</div>
+				<div>Hours of sunlight<span id="hours"></span></div>
 				<div id="exposure-gradient"></div>
 			</div>
 		</div>
@@ -142,6 +147,7 @@
 		const play = document.getElementById('play');
 		const stop = document.getElementById('stop');
 		const exposure = document.getElementById('exposure');
+		const hours = document.getElementById('hours');
 		const exposureGradientContainer = document.getElementById('exposure-gradient-container');
 		const exposureGradient = document.getElementById('exposure-gradient');
 
@@ -166,11 +172,19 @@
 			clearInterval(intervalTimer);
 		})
 
+		const getHoursOfSunAtLocation = (e) => {
+			const hoursOfSun = shadeMap.getHoursOfSun(e.clientX, e.clientY);
+			hours.innerText = hoursOfSun.toFixed(1);
+		}
+
 		exposure.addEventListener('click', (e) => {
 			clearInterval(intervalTimer);
 			const target = e.target;
 			if (!target.checked) {
 				shadeMap && shadeMap.setSunExposure(false);
+				document.removeEventListener('mousemove', getHoursOfSunAtLocation);
+				map.getContainer().style.cursor = '';
+				hours.innerText = '';
 				increment.disabled = false;
 				decrement.disabled = false;
 				play.disabled = false;
@@ -183,6 +197,8 @@
 					startDate: sunrise,
 					endDate: sunset
 				});
+				document.addEventListener('mousemove', getHoursOfSunAtLocation);
+				map.getContainer().style.cursor = 'crosshair';
 				increment.disabled = true
 				decrement.disabled = true;
 				play.disabled = true;
